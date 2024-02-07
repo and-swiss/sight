@@ -1,0 +1,59 @@
+#9.	Creation and representation   a 3D scene with movements  using OpenCV/OpenGL 
+
+import cv2
+import numpy as np
+
+# Function to draw a stick figure
+def draw_stick_figure(img, x_position):
+    # Draw the body
+    cv2.line(img, (x_position, 300), (x_position, 200), (0, 0, 255), 5)
+
+    # Draw the head
+    cv2.circle(img, (x_position, 180), 20, (0, 0, 255), -1)
+
+    # Draw the arms
+    cv2.line(img, (x_position, 240), (x_position + 30, 220), (0, 0, 255), 5)
+    cv2.line(img, (x_position, 240), (x_position - 30, 220), (0, 0, 255), 5)
+
+    # Draw the legs
+    cv2.line(img, (x_position, 300), (x_position + 30, 350), (0, 0, 255), 5)
+    cv2.line(img, (x_position, 300), (x_position - 30, 350), (0, 0, 255), 5)
+
+# Create a blank image
+width, height = 800, 400
+scene = np.zeros((height, width, 3), dtype=np.uint8)
+
+# Draw the static morning sky and sun
+scene[:height // 2, :] = (173, 216, 230)  # Light Blue color for the sky
+cv2.circle(scene, (width // 4, height // 4), 50, (255, 255, 0), -1)  # Yellow sun
+
+# Initial position of the stick figure
+x_position = 0
+
+# Main loop for animation
+while True:
+    # Clear the image for each frame
+    frame = scene.copy()
+
+    # Draw the ground
+    ground_color = (0, 100 + x_position % 156, 0)  # Brown to Green transition
+    frame[height // 2:, :] = ground_color
+
+    # Draw the stick figure
+    draw_stick_figure(frame, x_position)
+
+    # Show the frame
+    cv2.imshow('Morning Scene Animation', frame)
+
+    # Wait for user input (key press)
+    key = cv2.waitKey(50) & 0xFF
+
+    # Check if the 'r' key is pressed to move the stick figure
+    if key == ord('r'):
+        x_position += 10
+
+    # Check for the 'q' key to exit the loop
+    elif key == ord('q'):
+        break
+
+cv2.destroyAllWindows()
